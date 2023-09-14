@@ -1,0 +1,44 @@
+name: Test sccache libssl dependency in GitHub Actions
+
+on:
+  pull_request:
+    branches:
+      - staging
+      - production
+    paths:
+      - '.github/workflows/cargo_test.yaml'
+      - '.cargo/**'
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - '**/*.rs'
+      - 'base.Dockerfile'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out forty-two
+      uses: actions/checkout@v3
+      with:
+        path: ./forty-two
+
+    - name: Configure sccache
+      uses: actions/github-script@v6
+      with:
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+    - name: Build rust base image
+      working-directory: ./forty-two
+      run: |-
+        docker build . \
+        -f base.Dockerfile \
+        --build-arg SCCACHE_GHA_ENABLED=on \
+        --build-arg ACTIONS_CACHE_URL="${{ env.ACTIONS_CACHE_URL }}" \
+        --build-arg ACTIONS_RUNTIME_TOKEN="${{ env.ACTIONS_RUNTIME_TOKEN }}"
