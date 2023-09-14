@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out forty-two
+    - name: Check out test-sccache-in-ci
       uses: actions/checkout@v3
       with:
-        path: ./forty-two
+        path: ./test-sccache-in-ci
 
     - name: Configure sccache
       uses: actions/github-script@v6
@@ -35,7 +35,7 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Build rust base image
-      working-directory: ./forty-two
+      working-directory: ./test-sccache-in-ci
       run: |-
         docker build . \
         -f base.Dockerfile \
