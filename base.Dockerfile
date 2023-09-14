@@ -19,4 +19,4 @@ ENV RUSTC_WRAPPER=${SCCACHE_GHA_ENABLED:+sccache}
 ### sccache configuration end   ###
 ###################################
 
-RUN cargo install --locked --path .
+RUN cargo run
