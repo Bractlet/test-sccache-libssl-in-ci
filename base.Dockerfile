@@ -1,5 +1,7 @@
 FROM rust:latest as buildstep
 
+COPY . .
+
 ###################################
 ### sccache configuration start ###
 ###################################
