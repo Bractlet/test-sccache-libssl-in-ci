@@ -5,6 +5,7 @@ on:
     branches:
       - staging
       - production
+      - main
     paths:
       - '.github/workflows/cargo_test.yaml'
       - '.cargo/**'
